@@ -32,7 +32,7 @@ class LAC
 	}
 
 
-	private static function createWebApplication($config = NULL)
+	public static function createWebApplication($config = NULL)
 	{
 		if (self::$_w == NULL) {
 			$_w = new \LAC\core\webHttpapplication($config);
