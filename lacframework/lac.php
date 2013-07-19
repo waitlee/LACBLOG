@@ -1,13 +1,40 @@
 <?php
-// namespace LAC;
-use \LAC\webHttpapplication;
+
+/**
+ * LAC 框架核心类
+ *
+ * @package LAC
+ */
+
+namespace LAC;
+
+use \LAC\core\webHttpapplication;
 use \Exception;
+use \LAC\helper\ChromePhp;
+
 
 class LAC
 {
 	private static $_w;
-	private static $_c;
+	private static $_c = array();
 
+	/**
+	 * 获取web应用
+	 * 
+	 * @return  object 已经创建好的web应用
+	 */
+	public static function app()
+	{
+		return self::$_w;
+	}
+
+	/**
+	 * 自动加载具有完整命名空间的类文件
+	 * 
+	 * @param  string $className 具有完整命名空间的类
+	 * 
+	 * @return void        
+	 */
 	public static function autoload($className)
 	{
 		$classInfo = explode("\\", $className);
@@ -19,27 +46,45 @@ class LAC
 			$classPath = $value . DS;
 		}
 		$preFix = self::getPreFix($classFlag);
-
 		$classRealPath = $preFix . $classPath . $classBaseName;
-
-		if (file_exists($classRealPath)) {
-			self::$_c[$className] = $classRealPath;
-			require $classRealPath;
-		}else{
-			throw new Exception("file {$classBaseName} not fount in");
-			
-		}
+		try{
+			if (file_exists($classRealPath) && !array_key_exists($className, self::$_c)) {
+				self::$_c[$className] = $classRealPath;
+				require($classRealPath);
+			}else{
+				throw new Exception("file {$classRealPath} not found");	
+			}
+		} catch (Exception $e) { var_dump ($e);}
 	}
 
-
+	/**
+	 * 创建web应用实例
+	 * 
+	 * @param  string $config config文件的详细路径
+	 * 
+	 * @return object         创建的web应用
+	 */
 	public static function createWebApplication($config = NULL)
 	{
-		if (self::$_w == NULL) {
-			$_w = new \LAC\core\webHttpapplication($config);
+		try {
+			if (self::$_w == NULL) {
+				self::$_w = new webHttpapplication($config);
+			}
+		} catch (Exception $e) {
+			echo $e->xdebug_message;
 		}
+		
+		return self::$_w;
 	}
 
-	private static function getPreFix($classFlag)
+	/**
+     * 通过命名空间前缀获取真实路径
+     * 
+     * @param string $clsFlags 命名空间前缀
+     * 
+     * @return string
+     */
+	public static function getPreFix($classFlag)
 	{
 		switch ($classFlag) {
 			case 'LAC':
@@ -57,16 +102,16 @@ class LAC
 			default:
 				$preFix = F_PATH;
 				break;
-
-			return $preFix . DS;
 		}
+		return $preFix . DS;
 	}
 
-	public function run()
+	public static function debug()
 	{
-		var_dump($_GET);
-		echo 'run';
+		$args = func_get_args();
+		ChromePhp::log($args);
 	}
 }
 
-spl_autoload_register(array('LAC', 'autoload'));
+// 注册函数autoload
+spl_autoload_register(array('LAC\LAC', 'autoload'));
