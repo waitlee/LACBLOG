@@ -12,6 +12,6 @@ class Test extends BaseModel
 
 	public function testt()
 	{
-		
+
 	}
 }
