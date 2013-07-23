@@ -65,7 +65,8 @@ class webHttpapplication
 		try {
 			$this->_runAction();
 		} catch (Exception $e) {
-			var_dump($e->getTrace());
+			// var_dump($e->getTrace());
+			var_dump($e->getMessage());
 		}
 	}
 
