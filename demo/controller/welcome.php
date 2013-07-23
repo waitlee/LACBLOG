@@ -10,7 +10,7 @@ class Welcome extends BaseController
 	public function indexAction()
 	{
 		$model = new Test();
-		var_dump($model);
+		$model->showtable();
 	}
 
 	public function addAction()

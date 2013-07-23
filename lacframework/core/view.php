@@ -10,6 +10,7 @@ class View
 	private $_app;
 	private $_vars;
 
+	
 	public static function getInstance($dir)
 	{
 		static $instance = NULL;
@@ -53,7 +54,7 @@ class View
 		$appPrifix = LAC::getPreFix($prefix);
 		$relViewPagePath = $appPrifix . array_shift($appPathInfo) . DS . $this->_getDirname() . DS . $viewPage . '.php';
 		if (!file_exists($relViewPagePath)) {
-			throw new Exception("{$viewPage}" . ".php not found");
+			throw new Exception("{$viewPage}.php not found");
 		}
 		return $relViewPagePath;
 	}

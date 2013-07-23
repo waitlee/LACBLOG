@@ -9,4 +9,9 @@ class Test extends BaseModel
 	{
 		return 'test';
 	}
+
+	public function showtable()
+	{
+		$this->getTabs();
+	}
 }

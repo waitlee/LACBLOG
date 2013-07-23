@@ -14,7 +14,7 @@ return array(
 				"user" => "root",
 				"password" => "",
 				"dbname" => "lac",
-				"charset" => "utf-8",
+				"charset" => "utf8",
 				"pre" => "",
 			),
 		);

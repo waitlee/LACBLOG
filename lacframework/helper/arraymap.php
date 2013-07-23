@@ -21,7 +21,7 @@ class ArrayMap extends ArrayObject
 		if ($this->offsetExists($index)) {
 			return $this->offsetGet($index);
 		} else {
-			throw new Exception("undefind in arrayMap");
+			throw new Exception("undefind {$index} in arrayMap");
 		}
 	}
 
