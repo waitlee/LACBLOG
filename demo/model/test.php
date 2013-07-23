@@ -10,8 +10,14 @@ class Test extends BaseModel
 		return 'test';
 	}
 
+<<<<<<< HEAD
 	public function testt()
 	{
 
+=======
+	public function showtable()
+	{
+		$this->getTabs();
+>>>>>>> add model action
 	}
 }
