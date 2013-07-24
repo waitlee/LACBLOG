@@ -17,8 +17,8 @@ class BaseModel
 	public function __construct()
 	{
 		$this->conf = LAC::app()->conf()->db;
-		$this->conn = new Conn($this->conf);
 		$this->table = $this->getTableName();
+		$this->conn = new Conn($this->conf, $this->table);
 		$this->setFields();
 	}
 
@@ -40,10 +40,6 @@ class BaseModel
 	protected function getTableName()
 	{
 		$table = $this->conf->pre . $this->tableName();
-
-		if (!in_array($table, $this->getTabs())) {
-			throw new Exception(sprintf("table '%s' not found in database '%s'", $this->table, $this->conf->dbname));
-		}
 		return $table;
 	}
 
@@ -66,7 +62,7 @@ class BaseModel
 	 */
 	protected function getTableFields()
 	{
-		return $this->conn->getTabFields($this->table);
+		return $this->conn->getTabFields();
 	}
 
 	/**
@@ -88,17 +84,19 @@ class BaseModel
 	 */
 	public function findByPk($id)
 	{
-
+		$result = $this->conn->select()->where(self::$primaryKey, '=', $id)->query();
+		return $result;
 	}
 
-	public function findAll()
+	public function findAll($field, $operator, $value, $select = NULL)
 	{
-
+		$result = $this->conn->select($select)->where($field, $operator, $value)->queryAll();
+		return $result;
 	}
 
 	public function insert()
 	{
-
+		
 	}
 
 	public function delete()
@@ -112,6 +110,11 @@ class BaseModel
 	}
 
 	public function find()
+	{
+
+	}
+
+	public function findBySql()
 	{
 
 	}
