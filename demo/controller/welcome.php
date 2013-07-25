@@ -10,7 +10,8 @@ class Welcome extends BaseController
 	public function indexAction()
 	{
 		$model = new Test();
-		$a = $model->update(array('name' => 'waiitt', 'password' => 'aaaaa', 'age' => 14), "id = 4");
+		//$a = $model->update(array('name' => 'waiitt', 'password' => 'aaaaa', 'age' => 14), "id = 4");
+		$a = $model->delete('id', '=', 4);
 		echo $a;
 	}
 

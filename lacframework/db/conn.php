@@ -325,6 +325,13 @@ class Conn
 		return false;
 	}
 
+	public function delete()
+	{
+		$this->_sql = '';
+		$this->_sql = sprintf("DELETE FROM %s ", $this->_table);
+		return $this;
+	}
+
 	/**
 	 * 重置 this->_fields
 	 * 
@@ -333,6 +340,22 @@ class Conn
 	private function _clear()
 	{
 		$this->_fields = array();
+		$this->_sql = '';
+	}
+
+	/**
+	 * 执行一条无查询数据
+	 * 
+	 * @return  
+	 */
+	public function exec()
+	{
+		try {
+			$row = $this->_pdo->exec($this->_sql);
+		} catch (PDOException $e) {
+			throw new PDOException($e->getMessage());
+		}
+		return $row;
 	}
 
 	/**
@@ -349,6 +372,7 @@ class Conn
 			return array();
 		}
 		$result = $result->fetch($type);
+		$this->_clear();
 		return $result;
 	}
 
@@ -366,6 +390,7 @@ class Conn
 			return array();
 		}
 		$result = $result->fetchAll($type);
+		$this->_clear();
 		return $result;
 	}
 }

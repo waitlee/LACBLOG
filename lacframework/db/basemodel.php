@@ -149,9 +149,9 @@ class BaseModel
 		return $this->conn->update($condition);
 	}
 
-	public function delete($condition)
+	public function delete($field, $operator, $value)
 	{
-		
+		return $this->conn->delete()->where($field, $operator, $value)->exec();
 	}
 
 	public function findBySql()
