@@ -88,30 +88,70 @@ class BaseModel
 		return $result;
 	}
 
+	/**
+	 * 获取所有符合条件的数据
+	 * 
+	 * @param  string $field     条件字段
+	 * @param  string $operator  条件运算符
+	 * @param  string $value     条件值
+	 * @param  string $select    要查询的字段
+	 * 
+	 * @return array           
+	 */
 	public function findAll($field, $operator, $value, $select = NULL)
 	{
 		$result = $this->conn->select($select)->where($field, $operator, $value)->queryAll();
 		return $result;
 	}
 
-	public function insert()
+	/**
+	 * 插入数据
+	 * 
+	 * @param  array  $data 将要插入的数据格式为 array($field => $value, $field1 => $value1 )
+	 * 
+	 * @return integer  last_insert_id
+	 */
+	public function insert($data = array())
+	{
+		if (!is_array($data)) {
+			throw new Exception("action insert() must be a array");
+		}
+
+		foreach ($data as $key => $value) {
+			$this->conn->setValue($key, $value);
+		}
+
+		return $this->conn->save();
+	}
+
+	/**
+	 * 更新数据
+	 * 
+	 * @param  array  $data      要更新的字段和字段值格式为 array($field=>$value,$field1=>$value1)
+	 * @param  string $condition 更新条件
+	 * 
+	 * @return boolean            
+	 */
+	public function update($data = array(), $condition = '')
+	{
+		if (!is_array($data)) {
+			throw new Exception("action uodate() 1 param must be a array");
+		}
+
+		if ($condition === '') {
+			throw new Exception("action missed param condition");
+		}
+
+		foreach ($data as $key => $value) {
+			$this->conn->setValue($key, $value);
+		}
+
+		return $this->conn->update($condition);
+	}
+
+	public function delete($condition)
 	{
 		
-	}
-
-	public function delete()
-	{
-
-	}
-
-	public function update()
-	{
-
-	}
-
-	public function find()
-	{
-
 	}
 
 	public function findBySql()

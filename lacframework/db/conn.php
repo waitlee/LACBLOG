@@ -10,6 +10,7 @@ class Conn
 	private $_conf;
 	private $_table;
 	private $_sql;
+	private $_fields;
 
 	/**
 	 * 初始化实例
@@ -241,6 +242,97 @@ class Conn
 		$groupSql = sprintf("GROUP BY %s", $field);
 		$this->_sql .= ' ' . $groupSql;
 		return $this;
+	}
+
+	/**
+	 * 设置表达字段和值一一对应
+	 * 
+	 * @param string $field 字段名
+	 * @param string $value 字段的值
+	 */
+	public function setValue($field, $value)
+	{
+		if (!in_array($field, $this->getTabFields())) {
+			throw new Exception("field : {$field} not found in table {$this->_table}");
+		}
+
+		$this->_fields[$field] = $value;
+		return $this;
+	}
+
+	/**
+	 * 保存数据
+	 * 
+	 * @return mixed 
+	 */
+	public function save()
+	{
+		if ($this->_fields === array()) {
+			throw new Exception("No thing to insert");
+		}
+
+		$fields = array_keys($this->_fields);
+		$value = array_values($this->_fields);
+		var_dump($fields);
+		var_dump($value);
+		$fieldsStr = "(`" . implode('`,`', $fields) . "`)";
+		$valueStr = "('" . implode("','", $value) . "')";
+		$sql = sprintf("INSERT INTO %s %s VALUES %s", $this->_table, $fieldsStr, $valueStr);
+		try {
+			$row = $this->_pdo->exec($sql);
+		} catch (PDOException $e) {
+			throw new PDOException($e->getMessage());
+		}
+
+		if ($row > 0) {
+			$this->_clear();
+			return $this->_pdo->lastInsertId();
+		} 
+		return false;
+	}
+
+	/**
+	 * 更新数据
+	 * 
+	 * @param  string $condition 更新条件
+	 * 
+	 * @return boolean            
+	 */
+	public function update($condition)
+	{
+		$sqlStr = '';
+		if ($this->_fields === array()) {
+			throw new Exception("No thing to update");
+		}
+
+		foreach ($this->_fields as $key => $value) {
+			$sqlStr .= "`" . $key . "`='" . $value . "',";
+		}
+
+		$str = rtrim($sqlStr, ',');
+
+		$sql = sprintf("UPDATE %s SET %s WHERE %s", $this->_table, $str, $condition);
+		try {
+			$row = $this->_pdo->exec($sql);
+		} catch (PDOException $e) {
+			throw new PDOException($e->getMessage());
+		}
+
+		if ($row > 0) {
+			$this->_clear();
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 重置 this->_fields
+	 * 
+	 * @return  void
+	 */
+	private function _clear()
+	{
+		$this->_fields = array();
 	}
 
 	/**
