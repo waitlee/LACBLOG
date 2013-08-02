@@ -325,6 +325,11 @@ class Conn
 		return false;
 	}
 
+	/**
+	 * 删除数据
+	 * 
+	 * @return  
+	 */
 	public function delete()
 	{
 		$this->_sql = '';

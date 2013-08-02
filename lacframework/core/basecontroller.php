@@ -58,8 +58,7 @@ class BaseController
 	 */
 	private function _actionExist($action)
 	{
-		$actions = get_class_methods($this);
-		if (in_array($action, $actions)) {
+		if (method_exists($this, $action)) {
 			return true;
 		} else {
 			throw new Exception(sprintf("method '%s' not found in class '%s'", $action, get_class($this)));
